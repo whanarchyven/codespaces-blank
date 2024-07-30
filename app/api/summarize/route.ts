@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
     // return NextResponse.json(request.body)
     const result = await axios.post('https://d5dvsartlv83ra2p2eek.apigw.yandexcloud.net/summarize', {
         articleUrl: data.articleUrl
-    })
+    },{timeout:60000})
     console.log(result.data)
     return NextResponse.json(result.data)
 }

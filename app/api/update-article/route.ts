@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
         summary_human:data.summary_human,
         translation_human:data.translation_human,
         title_translation_human:data.title_translation_human,
-    })
+    },{timeout:60000})
     console.log(result.data)
     return NextResponse.json(result.data)
 }
