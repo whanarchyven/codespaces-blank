@@ -21,7 +21,8 @@ export interface ArticleInterface {
     source: string,
     mutateFunc: () => any,
     isPublished?: string,
-    category:string
+    category:string,
+    subcategory:string
 }
 
 const ArticleCard: FC<ArticleInterface> = ({
@@ -37,7 +38,7 @@ const ArticleCard: FC<ArticleInterface> = ({
                                                source,
                                                content,
                                                createdAt,
-                                               publishedDate,
+                                               publishedDate, subcategory,
                                                updatedAt, mutateFunc, isPublished,category
                                            }) => {
     const [isOpen, setIsOpen] = useState(false)
@@ -58,7 +59,8 @@ const ArticleCard: FC<ArticleInterface> = ({
             <div className={'flex items-center gap-5'}>
                 <p className={'font-bold underline'}>{format(new Date(publishedDate), 'dd.MM.yyyy')}</p>
                 <a href={mainUrl} className={'underline cursor-pointer text-blue-500 font-bold'}>{source}</a>
-                {category?.length>0?<p className={'font-bold underline'}>{category=='derma'?'Детская дерматология/Дерматовенерология':'Новости/статьи'}</p>:<p className={'font-bold underline'}>категория не указана</p>}
+                {category?.length>0?<p className={'font-bold underline'}>{category=='news'?'Новости':'Статьи'}</p>:<p className={'font-bold underline'}>категория не указана</p>}
+                {subcategory?.length>0?<p className={'font-bold underline'}>{subcategory=='Детская дерматология'?'Детская дерматология':'Дерматовенерология'}</p>:<p className={'font-bold underline'}>категория не указана</p>}
             </div>
             {isOpen ? <p className={'text-justify'}>{content}</p> :
                 <p className={'text-justify'}>{content.slice(0, 1000)}... <span onClick={() => {
@@ -76,7 +78,7 @@ const ArticleCard: FC<ArticleInterface> = ({
             <p className={'text-xl font-bold mt-7'}>Перевод заголовка:</p>
             <p className={'text-justify'}>{title_translation_human?.length > 0 ? title_translation_human : 'не составлено'}</p>
             {isPopOpen ?
-                <ArticlePop category={category} isPublished={isPublished} title_translation_ai={title_translation_ai} mutateFunc={mutateFunc} articleUrl={articleUrl}
+                <ArticlePop subcategory={subcategory} category={category} isPublished={isPublished} title_translation_ai={title_translation_ai} mutateFunc={mutateFunc} articleUrl={articleUrl}
                             content={content} createdAt={createdAt} mainUrl={mainUrl}
                             publishedDate={publishedDate} title={title} updatedAt={updatedAt} summary_ai={summary_ai}
                             summary_human={summary_human}

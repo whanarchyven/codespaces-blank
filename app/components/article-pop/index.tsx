@@ -22,7 +22,7 @@ const ArticlePop: FC<ArticlePopInterface> = ({
                                                  source,
                                                  content,
                                                  createdAt,
-                                                 publishedDate,
+                                                 publishedDate, subcategory,
                                                  updatedAt, closeFunc, mutateFunc, isPublished, category
                                              }) => {
 
@@ -48,7 +48,8 @@ const ArticlePop: FC<ArticlePopInterface> = ({
         console.log(data)
     }
 
-    const [categoryInput, setCategoryInput] = useState<'news' | 'derma'>(category == 'news' || category == 'derma' ? category : 'news')
+    const [categoryInput, setCategoryInput] = useState<'news' | 'articles'>(category == 'news' || category == 'articles' ? category : 'news')
+    const [subcategoryInput, setSubcategoryInput] = useState<'Детская дерматология' | 'Дерматовенерология'>(subcategory == 'Детская дерматология' || subcategory == 'Дерматовенерология' ? subcategory : 'Детская дерматология')
 
     const updateArticle = async () => {
         const {data}: any = await axios.post('/api/update-article', {
@@ -60,6 +61,11 @@ const ArticlePop: FC<ArticlePopInterface> = ({
         const publish: any = await axios.post('/api/update-category', {
             articleUrl: articleUrl,
             category: categoryInput,
+        })
+
+        const publishSubcategory: any = await axios.post('/api/update-subcategory', {
+            articleUrl: articleUrl,
+            subcategory: subcategoryInput,
         })
 
         console.log(data, publish.data)
@@ -127,13 +133,30 @@ const ArticlePop: FC<ArticlePopInterface> = ({
                             setCategoryInput('news')
                         }}
                              className={clsx('p-2 rounded-xl cursor-pointer', categoryInput == 'news' ? 'bg-blue-500 border-2 border-transparent flex items-center justify-center text-white' : 'border-blue-500 border-2 flex items-center justify-center text-blue-500')}>
-                            Новости / статьи
+                            Новости
                         </div>
                         <div onClick={() => {
-                            setCategoryInput('derma')
+                            setCategoryInput('articles')
                         }}
-                             className={clsx('p-2 rounded-xl cursor-pointer', categoryInput == 'derma' ? 'bg-blue-500 border-2 border-transparent flex items-center justify-center text-white' : 'border-blue-500 border-2 flex items-center justify-center text-blue-500')}>
-                            Детская дерматология / дерматовенерология
+                             className={clsx('p-2 rounded-xl cursor-pointer', categoryInput == 'articles' ? 'bg-blue-500 border-2 border-transparent flex items-center justify-center text-white' : 'border-blue-500 border-2 flex items-center justify-center text-blue-500')}>
+                            Статьи
+                        </div>
+                    </div>
+                </div>
+                <div className={'flex flex-col gap-1'}>
+                    <p className={'text-blue-500 font-medium'}>Подкатегория</p>
+                    <div className={'flex items-center gap-2'}>
+                        <div onClick={() => {
+                            setSubcategoryInput('Детская дерматология')
+                        }}
+                             className={clsx('p-2 rounded-xl cursor-pointer', subcategoryInput == 'Детская дерматология' ? 'bg-blue-500 border-2 border-transparent flex items-center justify-center text-white' : 'border-blue-500 border-2 flex items-center justify-center text-blue-500')}>
+                            Детская дерматология
+                        </div>
+                        <div onClick={() => {
+                            setSubcategoryInput('Дерматовенерология')
+                        }}
+                             className={clsx('p-2 rounded-xl cursor-pointer', subcategoryInput == 'Дерматовенерология' ? 'bg-blue-500 border-2 border-transparent flex items-center justify-center text-white' : 'border-blue-500 border-2 flex items-center justify-center text-blue-500')}>
+                            Дерматовенерология
                         </div>
                     </div>
                 </div>
