@@ -3,6 +3,7 @@ import React, {FC, useState} from 'react';
 import {ArticleInterface} from "@/app/components/article-card";
 import axios from "axios";
 import {ClipLoader, MoonLoader} from "react-spinners";
+import clsx from "clsx";
 
 interface ArticlePopInterface extends ArticleInterface {
     closeFunc: () => any,
@@ -22,7 +23,7 @@ const ArticlePop: FC<ArticlePopInterface> = ({
                                                  content,
                                                  createdAt,
                                                  publishedDate,
-                                                 updatedAt, closeFunc,mutateFunc
+                                                 updatedAt, closeFunc, mutateFunc, isPublished, category
                                              }) => {
 
     const [inputTitle, setInputTitle] = useState(title_translation_human)
@@ -47,6 +48,8 @@ const ArticlePop: FC<ArticlePopInterface> = ({
         console.log(data)
     }
 
+    const [categoryInput, setCategoryInput] = useState<'news' | 'derma'>(category == 'news' || category == 'derma' ? category : 'news')
+
     const updateArticle = async () => {
         const {data}: any = await axios.post('/api/update-article', {
             articleUrl: articleUrl,
@@ -54,11 +57,29 @@ const ArticlePop: FC<ArticlePopInterface> = ({
             translation_human: inputContent,
             title_translation_human: inputTitle
         })
-        console.log(data)
+        const publish: any = await axios.post('/api/update-category', {
+            articleUrl: articleUrl,
+            category: categoryInput,
+        })
+
+        console.log(data, publish.data)
         mutateFunc()
         closeFunc()
         setIsLoading(false)
     }
+
+    const publishArticle = async (isPublished: 'true' | 'false') => {
+
+        const {data}: any = await axios.post('/api/update-publishing', {
+            articleUrl: articleUrl,
+            isPublished: isPublished,
+        })
+        console.log(data)
+        setIsLoading(false)
+        mutateFunc()
+        closeFunc()
+    }
+
 
     return (
         <div
@@ -66,7 +87,10 @@ const ArticlePop: FC<ArticlePopInterface> = ({
             <img onClick={closeFunc} className={'w-12 absolute cursor-pointer right-9 top-9'} src={'/close.svg'}/>
             <div className={'w-2/3 bg-white flex flex-col gap-5 p-5 rounded-2xl'}>
                 <div className={'flex justify-between items-center'}>
-                    <p className={'text-2xl font-bold'}>Редактирование статьи</p>
+                    <div className={'flex items-center gap-12'}>
+                        <p className={'text-2xl font-bold'}>Редактирование статьи</p>
+                        <p className={clsx('text-sm font-bold', Boolean(isPublished) ? 'text-green-500' : 'text-red-500')}>{Boolean(isPublished) ? 'Опубликовано ✔' : 'Не опубликованно ✕ '}</p>
+                    </div>
                     <div onClick={() => {
                         setIsFetching(true);
                         fetchSummary()
@@ -96,14 +120,49 @@ const ArticlePop: FC<ArticlePopInterface> = ({
                     }}
                               className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{inputSummary}</textarea>
                 </div>
+                <div className={'flex flex-col gap-1'}>
+                    <p className={'text-blue-500 font-medium'}>Категория</p>
+                    <div className={'flex items-center gap-2'}>
+                        <div onClick={() => {
+                            setCategoryInput('news')
+                        }}
+                             className={clsx('p-2 rounded-xl cursor-pointer', categoryInput == 'news' ? 'bg-blue-500 border-2 border-transparent flex items-center justify-center text-white' : 'border-blue-500 border-2 flex items-center justify-center text-blue-500')}>
+                            Новости / статьи
+                        </div>
+                        <div onClick={() => {
+                            setCategoryInput('derma')
+                        }}
+                             className={clsx('p-2 rounded-xl cursor-pointer', categoryInput == 'derma' ? 'bg-blue-500 border-2 border-transparent flex items-center justify-center text-white' : 'border-blue-500 border-2 flex items-center justify-center text-blue-500')}>
+                            Детская дерматология / дерматовенерология
+                        </div>
+                    </div>
+                </div>
                 {inputSummary?.length > 0 && inputContent?.length > 0 && inputTitle?.length > 0 ? <div onClick={() => {
                         setIsLoading(true);
                         updateArticle()
                     }} className={'bg-blue-500 cursor-pointer p-2 rounded-xl flex items-center justify-center gap-2'}>
                         {isLoading ? <ClipLoader size={25} color={'#FFF'}/> :
-                            <p className={'text-white font-bold'}>Сохранить и опубликовать</p>}
+                            <p className={'text-white font-bold'}>Сохранить</p>}
 
                     </div> :
+                    null}
+                {inputSummary?.length > 0 && inputContent?.length > 0 && inputTitle?.length > 0 ? <>
+                        {Boolean(isPublished) ? <div onClick={() => {
+                            setIsLoading(true);
+                            publishArticle('false')
+                        }} className={'bg-red-500 cursor-pointer p-2 rounded-xl flex items-center justify-center gap-2'}>
+                            {isLoading ? <ClipLoader size={25} color={'#FFF'}/> :
+                                <p className={'text-white font-bold'}>Снять с публикации</p>}
+
+                        </div> : <div onClick={() => {
+                            setIsLoading(true);
+                            publishArticle('true')
+                        }} className={'bg-green-500 cursor-pointer p-2 rounded-xl flex items-center justify-center gap-2'}>
+                            {isLoading ? <ClipLoader size={25} color={'#FFF'}/> :
+                                <p className={'text-white font-bold'}>Опубликовать</p>}
+
+                        </div>}
+                    </> :
                     null}
             </div>
         </div>

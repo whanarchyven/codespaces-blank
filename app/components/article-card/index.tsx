@@ -2,6 +2,7 @@
 import React, {FC, useState} from 'react';
 import {format} from "date-fns";
 import ArticlePop from "@/app/components/article-pop";
+import clsx from "clsx";
 
 export interface ArticleInterface {
     articleUrl: string,
@@ -15,10 +16,12 @@ export interface ArticleInterface {
     summary_human: string,
     translation_ai: string
     translation_human: string,
-    title_translation_ai:string,
+    title_translation_ai: string,
     title_translation_human: string,
     source: string,
-    mutateFunc:()=>any,
+    mutateFunc: () => any,
+    isPublished?: string,
+    category:string
 }
 
 const ArticleCard: FC<ArticleInterface> = ({
@@ -35,7 +38,7 @@ const ArticleCard: FC<ArticleInterface> = ({
                                                content,
                                                createdAt,
                                                publishedDate,
-                                               updatedAt,mutateFunc
+                                               updatedAt, mutateFunc, isPublished,category
                                            }) => {
     const [isOpen, setIsOpen] = useState(false)
     const [isTranslateOpen, setIsTranslateOpen] = useState(false)
@@ -44,16 +47,18 @@ const ArticleCard: FC<ArticleInterface> = ({
         <div className={'flex flex-col p-4 rounded-xl border-2 border-blue-500 gap-1 w-full'}>
             <div className={'flex justify-between gap-2 items-center'}>
                 <a href={articleUrl} className={'font-bold underline text-blue-500 text-xl'}>{title}</a>
-                {summary_human.length == 0 ? <div onClick={() => {
+                <div onClick={() => {
                     setIsPopOpen(true)
                 }}
-                                                  className={'flex justify-center cursor-pointer rounded-xl items-center p-2 bg-blue-500 text-white'}>
+                     className={'flex justify-center cursor-pointer rounded-xl items-center p-2 bg-blue-500 text-white'}>
                     Редактировать
-                </div> : null}
+                </div>
             </div>
+            <p className={clsx('text-sm font-bold', Boolean(isPublished) ? 'text-green-500' : 'text-red-500')}>{Boolean(isPublished) ? 'Опубликовано ✔' : 'Не опубликованно ✕ '}</p>
             <div className={'flex items-center gap-5'}>
                 <p className={'font-bold underline'}>{format(new Date(publishedDate), 'dd.MM.yyyy')}</p>
                 <a href={mainUrl} className={'underline cursor-pointer text-blue-500 font-bold'}>{source}</a>
+                {category?.length>0?<p className={'font-bold underline'}>{category=='derma'?'Детская дерматология/Дерматовенерология':'Новости/статьи'}</p>:<p className={'font-bold underline'}>категория не указана</p>}
             </div>
             {isOpen ? <p className={'text-justify'}>{content}</p> :
                 <p className={'text-justify'}>{content.slice(0, 1000)}... <span onClick={() => {
@@ -71,7 +76,8 @@ const ArticleCard: FC<ArticleInterface> = ({
             <p className={'text-xl font-bold mt-7'}>Перевод заголовка:</p>
             <p className={'text-justify'}>{title_translation_human?.length > 0 ? title_translation_human : 'не составлено'}</p>
             {isPopOpen ?
-                <ArticlePop title_translation_ai={title_translation_ai} mutateFunc={mutateFunc} articleUrl={articleUrl} content={content} createdAt={createdAt} mainUrl={mainUrl}
+                <ArticlePop category={category} isPublished={isPublished} title_translation_ai={title_translation_ai} mutateFunc={mutateFunc} articleUrl={articleUrl}
+                            content={content} createdAt={createdAt} mainUrl={mainUrl}
                             publishedDate={publishedDate} title={title} updatedAt={updatedAt} summary_ai={summary_ai}
                             summary_human={summary_human}
                             translation_ai={translation_ai} translation_human={translation_human}
