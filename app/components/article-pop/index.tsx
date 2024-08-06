@@ -22,8 +22,16 @@ const ArticlePop: FC<ArticlePopInterface> = ({
                                                  source,
                                                  content,
                                                  createdAt,
-                                                 publishedDate, subcategory,
-                                                 updatedAt, closeFunc, mutateFunc, isPublished, category
+                                                 publishedDate,
+                                                 subcategory,
+                                                 pdf_text_translation_human,
+                                                 pdf_text_summary_human,
+                                                 pdf_text,
+                                                 updatedAt,
+                                                 closeFunc,
+                                                 mutateFunc,
+                                                 isPublished,
+                                                 category
                                              }) => {
 
     const [inputTitle, setInputTitle] = useState(title_translation_human)
@@ -56,7 +64,7 @@ const ArticlePop: FC<ArticlePopInterface> = ({
             articleUrl: articleUrl,
             summary_human: inputSummary,
             translation_human: inputContent,
-            title_translation_human: inputTitle
+            title_translation_human: inputTitle,
         })
         const publish: any = await axios.post('/api/update-category', {
             articleUrl: articleUrl,
@@ -67,6 +75,15 @@ const ArticlePop: FC<ArticlePopInterface> = ({
             articleUrl: articleUrl,
             subcategory: subcategoryInput,
         })
+
+        if (pdfInputText.length > 0 && pdfInputSummary.length > 0) {
+            const publishPdf: any = await axios.post('/api/update-pdf', {
+                articleUrl: articleUrl,
+                pdf_text_translation_human: pdfInputText,
+                pdf_text_summary_human: pdfInputSummary
+            })
+
+        }
 
         console.log(data, publish.data)
         mutateFunc()
@@ -86,12 +103,32 @@ const ArticlePop: FC<ArticlePopInterface> = ({
         closeFunc()
     }
 
+    const fetchPdf = async () => {
+        const {data}: any = await axios.post('/api/summarize-pdf', {
+            articleUrl: articleUrl
+        })
+        if (data) {
+            console.log(data)
+            setPdfInputSummary(data.pdf_text_summary_human)
+            setPdfInputText(data.pdf_text_translation_human)
+            // setPdfInputTitle(data.)
+        }
+        setIsPdfFetching(false)
+        console.log(data)
+    }
+
+    console.log(pdf_text_summary_human)
+
+    const [pdfInputSummary, setPdfInputSummary] = useState(pdf_text_summary_human ?? '')
+    const [pdfInputText, setPdfInputText] = useState(pdf_text_translation_human ?? '')
+
+    const [isPdfFetching, setIsPdfFetching] = useState(false)
 
     return (
         <div
             className={'fixed w-screen h-screen top-0 left-0 bg-black backdrop-blur-sm flex justify-center items-center bg-opacity-50'}>
             <img onClick={closeFunc} className={'w-12 absolute cursor-pointer right-9 top-9'} src={'/close.svg'}/>
-            <div className={'w-2/3 bg-white flex flex-col gap-5 p-5 rounded-2xl'}>
+            <div className={'w-2/3 bg-white flex flex-col gap-5 p-5 overflow-y-scroll max-h-screen rounded-2xl'}>
                 <div className={'flex justify-between items-center'}>
                     <div className={'flex items-center gap-12'}>
                         <p className={'text-2xl font-bold'}>Редактирование статьи</p>
@@ -160,6 +197,37 @@ const ArticlePop: FC<ArticlePopInterface> = ({
                         </div>
                     </div>
                 </div>
+                {pdf_text &&
+                    <div className={'flex flex-col gap-2'}>
+                        <div className={'flex justify-between items-center'}>
+                            <div className={'flex items-center gap-12'}>
+                                <p className={'text-2xl font-bold'}>Редактирование PDF</p>
+                            </div>
+                            <div onClick={() => {
+                                setIsPdfFetching(true);
+                                fetchPdf()
+                            }}
+                                 className={'bg-blue-500 cursor-pointer p-2 rounded-xl flex items-center justify-center gap-2'}>
+                                {isPdfFetching ? <ClipLoader size={25} color={'#FFF'}/> : <><p
+                                    className={'text-white font-bold'}>AI</p>
+                                    <img className={'w-5'} src={'/ai.svg'}/></>}
+                            </div>
+                        </div>
+                        <div className={'flex flex-col gap-1'}>
+                            <p className={'text-blue-500 font-medium'}>Перевод текста PDF</p>
+                            <textarea rows={5} value={pdfInputText} onChange={(event) => {
+                                setPdfInputText(event.target.value)
+                            }}
+                                      className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{pdfInputText}</textarea>
+                        </div>
+                        <div className={'flex flex-col gap-1'}>
+                            <p className={'text-blue-500 font-medium'}>Саммари PDF</p>
+                            <textarea rows={5} value={pdfInputSummary} onChange={(event) => {
+                                setPdfInputSummary(event.target.value)
+                            }}
+                                      className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{pdfInputSummary}</textarea>
+                        </div>
+                    </div>}
                 {inputSummary?.length > 0 && inputContent?.length > 0 && inputTitle?.length > 0 ? <div onClick={() => {
                         setIsLoading(true);
                         updateArticle()
