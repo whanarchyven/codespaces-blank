@@ -25,7 +25,9 @@ export interface ArticleInterface {
     subcategory: string,
     pdf_text?: string,
     pdf_text_summary_human?: string,
-    pdf_text_translation_human?: string
+    pdf_text_translation_human?: string,
+    references?:string[]
+    references_human?:string[]
 }
 
 const ArticleCard: FC<ArticleInterface> = ({
@@ -42,7 +44,7 @@ const ArticleCard: FC<ArticleInterface> = ({
                                                content, pdf_text_translation_human, pdf_text_summary_human, pdf_text,
                                                createdAt,
                                                publishedDate, subcategory,
-                                               updatedAt, mutateFunc, isPublished, category
+                                               updatedAt, mutateFunc, isPublished, category, references_human,references
                                            }) => {
     const [isOpen, setIsOpen] = useState(false)
     const [isTranslateOpen, setIsTranslateOpen] = useState(false)
@@ -99,7 +101,7 @@ const ArticleCard: FC<ArticleInterface> = ({
                             publishedDate={publishedDate} title={title} updatedAt={updatedAt} summary_ai={summary_ai}
                             summary_human={summary_human}
                             translation_ai={translation_ai} translation_human={translation_human}
-                            title_translation_human={title_translation_human} closeFunc={() => {
+                            title_translation_human={title_translation_human} references={references} references_human={references_human??[]} closeFunc={() => {
                     setIsPopOpen(false)
                 }} source={source}/> : null}
         </div>

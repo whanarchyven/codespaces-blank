@@ -31,7 +31,7 @@ const ArticlePop: FC<ArticlePopInterface> = ({
                                                  closeFunc,
                                                  mutateFunc,
                                                  isPublished,
-                                                 category
+                                                 category, references_human,references
                                              }) => {
 
     const [inputTitle, setInputTitle] = useState(title_translation_human)
@@ -51,6 +51,7 @@ const ArticlePop: FC<ArticlePopInterface> = ({
             setInputSummary(data.summary_human)
             setInputContent(data.translation_human)
             setInputTitle(data.title_translation_human)
+            setInputReferences(data.references_human.join('\n'))
         }
         setIsFetching(false)
         console.log(data)
@@ -84,12 +85,37 @@ const ArticlePop: FC<ArticlePopInterface> = ({
             })
 
         }
+        if (inputReferences != null) {
+            const refs = inputReferences.split('\n')
+            console.log(refs)
+            const publishRefs = await axios.post('/api/update-references', {
+                articleUrl: articleUrl,
+                references_human: refs
+            })
+            console.log(publishRefs)
+        }
+
+        // const updateRef=await axios.post('/api/update-references',{
+        //
+        // })
 
         console.log(data, publish.data)
         mutateFunc()
         closeFunc()
         setIsLoading(false)
     }
+
+    const initializeReferences=()=>{
+        if(references&&references.length>0){
+            return references
+        }
+        if(references_human&&references_human.length>0){
+            return references_human
+        }
+        return []
+    }
+
+    const [inputReferences, setInputReferences] = useState(initializeReferences().join('\n'))
 
     const publishArticle = async (isPublished: 'true' | 'false') => {
 
@@ -156,12 +182,21 @@ const ArticlePop: FC<ArticlePopInterface> = ({
                     }}
                               className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{inputContent}</textarea>
                 </div>
+
                 <div className={'flex flex-col gap-1'}>
                     <p className={'text-blue-500 font-medium'}>Саммари</p>
                     <textarea rows={5} value={inputSummary} onChange={(event) => {
                         setInputSummary(event.target.value)
                     }}
                               className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{inputSummary}</textarea>
+                </div>
+                <div className={'flex flex-col gap-1'}>
+                    <p className={'text-blue-500 font-medium'}>Список используемых источников (каждый источник с новой
+                        строки)</p>
+                    <textarea rows={5} value={inputReferences} onChange={(event) => {
+                        setInputReferences(event.target.value)
+                    }}
+                              className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{inputReferences}</textarea>
                 </div>
                 <div className={'flex flex-col gap-1'}>
                     <p className={'text-blue-500 font-medium'}>Категория</p>
@@ -197,6 +232,7 @@ const ArticlePop: FC<ArticlePopInterface> = ({
                         </div>
                     </div>
                 </div>
+
                 {pdf_text &&
                     <div className={'flex flex-col gap-2'}>
                         <div className={'flex justify-between items-center'}>
