@@ -4,7 +4,7 @@ import {ArticleInterface} from "@/app/components/article-card";
 import axios from "axios";
 import {ClipLoader, MoonLoader} from "react-spinners";
 import clsx from "clsx";
-
+import TextareaAutosize from 'react-textarea-autosize';
 interface ArticlePopInterface extends ArticleInterface {
     closeFunc: () => any,
 }
@@ -177,26 +177,26 @@ const ArticlePop: FC<ArticlePopInterface> = ({
                 </div>
                 <div className={'flex flex-col gap-1'}>
                     <p className={'text-blue-500 font-medium'}>Перевод текста</p>
-                    <textarea rows={5} value={inputContent} onChange={(event) => {
+                    <TextareaAutosize rows={10} value={inputContent} onChange={(event) => {
                         setInputContent(event.target.value)
                     }}
-                              className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{inputContent}</textarea>
+                              className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{inputContent}</TextareaAutosize>
                 </div>
 
                 <div className={'flex flex-col gap-1'}>
                     <p className={'text-blue-500 font-medium'}>Саммари</p>
-                    <textarea rows={5} value={inputSummary} onChange={(event) => {
+                    <TextareaAutosize rows={10} value={inputSummary} onChange={(event) => {
                         setInputSummary(event.target.value)
                     }}
-                              className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{inputSummary}</textarea>
+                              className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{inputSummary}</TextareaAutosize>
                 </div>
                 <div className={'flex flex-col gap-1'}>
                     <p className={'text-blue-500 font-medium'}>Список используемых источников (каждый источник с новой
                         строки)</p>
-                    <textarea rows={5} value={inputReferences} onChange={(event) => {
+                    <TextareaAutosize rows={10} value={inputReferences} onChange={(event) => {
                         setInputReferences(event.target.value)
                     }}
-                              className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{inputReferences}</textarea>
+                              className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{inputReferences}</TextareaAutosize>
                 </div>
                 <div className={'flex flex-col gap-1'}>
                     <p className={'text-blue-500 font-medium'}>Категория</p>
@@ -251,17 +251,17 @@ const ArticlePop: FC<ArticlePopInterface> = ({
                         </div>
                         <div className={'flex flex-col gap-1'}>
                             <p className={'text-blue-500 font-medium'}>Перевод текста PDF</p>
-                            <textarea rows={5} value={pdfInputText} onChange={(event) => {
+                            <TextareaAutosize rows={10} value={pdfInputText} onChange={(event) => {
                                 setPdfInputText(event.target.value)
                             }}
-                                      className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{pdfInputText}</textarea>
+                                      className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{pdfInputText}</TextareaAutosize>
                         </div>
                         <div className={'flex flex-col gap-1'}>
                             <p className={'text-blue-500 font-medium'}>Саммари PDF</p>
-                            <textarea rows={5} value={pdfInputSummary} onChange={(event) => {
+                            <TextareaAutosize rows={10} value={pdfInputSummary} onChange={(event) => {
                                 setPdfInputSummary(event.target.value)
                             }}
-                                      className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{pdfInputSummary}</textarea>
+                                      className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{pdfInputSummary}</TextareaAutosize>
                         </div>
                     </div>}
                 {inputSummary?.length > 0 && inputContent?.length > 0 && inputTitle?.length > 0 ? <div onClick={() => {
