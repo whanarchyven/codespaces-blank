@@ -2,7 +2,7 @@
 import React, {FC, useState} from 'react';
 import {ArticleInterface} from "@/app/components/article-card";
 import axios from "axios";
-import {ClipLoader, MoonLoader} from "react-spinners";
+import {ClipLoader} from "react-spinners";
 import clsx from "clsx";
 import TextareaAutosize from 'react-textarea-autosize';
 interface ArticlePopInterface extends ArticleInterface {

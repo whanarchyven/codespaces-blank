@@ -1,5 +1,4 @@
 "use client"
-import Image from "next/image";
 import {useParams, useRouter, useSearchParams} from "next/navigation";
 import {format} from "date-fns";
 import {useEffect, useState} from "react";
@@ -25,7 +24,7 @@ export default function Home() {
 
     useEffect(() => {
         const isAuth = localStorage.getItem('isAuthorized')
-        if (isAuth != 'true') {
+        if (isAuth != 'true'&&router) {
             router.push('/auth')
         }
     }, [])
