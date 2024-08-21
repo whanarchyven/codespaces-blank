@@ -106,11 +106,11 @@ const ArticlePop: FC<ArticlePopInterface> = ({
     }
 
     const initializeReferences=()=>{
-        if(references&&references.length>0){
-            return references
-        }
         if(references_human&&references_human.length>0){
             return references_human
+        }
+        if(references&&references.length>0){
+            return references
         }
         return []
     }
