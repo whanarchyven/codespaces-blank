@@ -28,6 +28,7 @@ export interface ArticleInterface {
     pdf_text_translation_human?: string,
     references?:string[]
     references_human?:string[]
+    hasPdf?:boolean
 }
 
 const ArticleCard: FC<ArticleInterface> = ({
@@ -44,7 +45,7 @@ const ArticleCard: FC<ArticleInterface> = ({
                                                content, pdf_text_translation_human, pdf_text_summary_human, pdf_text,
                                                createdAt,
                                                publishedDate, subcategory,
-                                               updatedAt, mutateFunc, isPublished, category, references_human,references
+                                               updatedAt, mutateFunc, isPublished, category, references_human,references, hasPdf
                                            }) => {
     const [isOpen, setIsOpen] = useState(false)
     const [isTranslateOpen, setIsTranslateOpen] = useState(false)
@@ -71,8 +72,8 @@ const ArticleCard: FC<ArticleInterface> = ({
                     <p className={'font-bold underline'}>{subcategory == 'Детская дерматология' ? 'Детская дерматология' : 'Дерматовенерология'}</p> :
                     <p className={'font-bold underline'}>категория не указана</p>}
             </div>
-            {isOpen ? <p className={'text-justify'}>{content}</p> :
-                <p className={'text-justify'}>{content.slice(0, 1000)}... <span onClick={() => {
+            {isOpen ? <p className={'text-justify'}>{((hasPdf&&pdf_text)?pdf_text:content)}</p> :
+                <p className={'text-justify'}>{((hasPdf&&pdf_text)?pdf_text.slice(0, 1000):content.slice(0, 1000))}... <span onClick={() => {
                     setIsOpen(true)
                 }} className={'underline text-blue-500 cursor-pointer'}>Показать полностью</span></p>}
             <p className={'text-xl font-bold mt-7'}>Саммари:</p>
@@ -93,7 +94,7 @@ const ArticleCard: FC<ArticleInterface> = ({
                 <p className={'text-xl font-bold mt-7'}>Саммари PDF:</p>
                 <p className={'text-justify'}>{pdf_text_summary_human?.length > 0 ? pdf_text_summary_human : 'не составлено'}</p></>}
             {isPopOpen ?
-                <ArticlePop pdf_text={pdf_text} pdf_text_summary_human={pdf_text_summary_human}
+                <ArticlePop hasPdf={hasPdf} pdf_text={pdf_text} pdf_text_summary_human={pdf_text_summary_human}
                             pdf_text_translation_human={pdf_text_translation_human} subcategory={subcategory}
                             category={category} isPublished={isPublished} title_translation_ai={title_translation_ai}
                             mutateFunc={mutateFunc} articleUrl={articleUrl}

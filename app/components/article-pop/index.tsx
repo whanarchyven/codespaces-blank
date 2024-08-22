@@ -31,7 +31,7 @@ const ArticlePop: FC<ArticlePopInterface> = ({
                                                  closeFunc,
                                                  mutateFunc,
                                                  isPublished,
-                                                 category, references_human,references
+                                                 category, references_human,references, hasPdf
                                              }) => {
 
     const [inputTitle, setInputTitle] = useState(title_translation_human)
@@ -175,21 +175,21 @@ const ArticlePop: FC<ArticlePopInterface> = ({
                         setInputTitle(event.target.value)
                     }} className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}/>
                 </div>
-                <div className={'flex flex-col gap-1'}>
+                {!hasPdf&&<div className={'flex flex-col gap-1'}>
                     <p className={'text-blue-500 font-medium'}>Перевод текста</p>
                     <TextareaAutosize rows={10} value={inputContent} onChange={(event) => {
                         setInputContent(event.target.value)
                     }}
                               className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{inputContent}</TextareaAutosize>
-                </div>
+                </div>}
 
-                <div className={'flex flex-col gap-1'}>
+                {!hasPdf&&<div className={'flex flex-col gap-1'}>
                     <p className={'text-blue-500 font-medium'}>Саммари</p>
                     <TextareaAutosize rows={10} value={inputSummary} onChange={(event) => {
                         setInputSummary(event.target.value)
                     }}
-                              className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{inputSummary}</TextareaAutosize>
-                </div>
+                                      className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{inputSummary}</TextareaAutosize>
+                </div>}
                 <div className={'flex flex-col gap-1'}>
                     <p className={'text-blue-500 font-medium'}>Список используемых источников (каждый источник с новой
                         строки)</p>

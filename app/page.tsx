@@ -1,5 +1,6 @@
 "use client"
 import {useParams, useRouter, useSearchParams} from "next/navigation";
+import {motion} from "framer-motion";
 import {format} from "date-fns";
 import {useEffect, useState} from "react";
 import axios from "axios";
@@ -20,17 +21,19 @@ export default function Home() {
 
     const [isLoading, setIsLoading] = useState(true)
 
+    const [isPdf, setIsPdf] = useState(true)
+
     const router = useRouter()
 
     useEffect(() => {
         const isAuth = localStorage.getItem('isAuthorized')
-        if (isAuth != 'true'&&router) {
+        if (isAuth != 'true' && router) {
             router.push('/auth')
         }
     }, [])
 
     const fetchArticles = async () => {
-        axios.get(`https://d5dvsartlv83ra2p2eek.apigw.yandexcloud.net/parserInfo?date=${format(date, 'yyyy-MM-dd')}`).then((res) => {
+        axios.get(`https://d5dvsartlv83ra2p2eek.apigw.yandexcloud.net/parserInfo?hasPdf=${isPdf}&date=${format(date, 'yyyy-MM-dd')}`).then((res) => {
             setArticles(res.data.reverse())
             setIsLoading(false)
             console.log(res.data)
@@ -40,19 +43,38 @@ export default function Home() {
 
     useEffect(() => {
         fetchArticles()
-    }, [date]);
+    }, [date, isPdf]);
 
 
     return (
         <main className="p-10">
             <div className={'mt-5 flex flex-col gap-12'}>
                 <div className={'flex items-center pr-32 justify-between'}>
-                    <p className={'text-4xl font-bold'}>Статьи Medical Exchange Alliance</p>
+                    <div className={'flex items-center gap-20'}>
+                        <p className={'text-3xl font-bold'}>Статьи Medical Exchange Alliance</p>
+                        <div onClick={() => {
+                            setIsLoading(true);
+                            setIsPdf(!isPdf)
+                        }} className={'flex cursor-pointer items-center gap-2'}>
+                            <p>Статьи</p>
+                            <div
+                                className={'w-16 relative rounded-full flex items-center border-2 h-7 border-blue-500'}>
+                                <motion.div variants={{
+                                    open: {left: 3, right: 'auto', opacity: 0.3},
+                                    closed: {left: 'auto', right: 3, opacity: 1}
+                                }} animate={!isPdf ? 'open' : 'closed'}
+                                            className={'w-5 absolute aspect-square bg-blue-500 rounded-full'}>
+
+                                </motion.div>
+                            </div>
+                        </div>
+                    </div>
                     <div className={'flex flex-col w-48 justify-end'}>
                         <DatePicker dateFormat={'dd.MM.yyyy'}
                                     className={'text-xl font-bold border-blue-500 border-2 rounded-xl text-center'}
                                     selected={date} onChange={(date) => {
                             if (date) {
+                                setIsLoading(true)
                                 setDate(date)
                             }
                         }}/>
@@ -62,7 +84,7 @@ export default function Home() {
                 {isLoading ? <div className={'h-screen flex justify-center -mt-32 items-center'}>
                     <HashLoader color={'#3b82f6'}/>
                 </div> : <>{articles.map((article, counter) => {
-                    return <ArticleCard key={counter} mutateFunc={fetchArticles} {...article}/>
+                    return <ArticleCard hasPdf={isPdf} key={counter} mutateFunc={fetchArticles} {...article}/>
                 })}</>}
             </div>
         </main>
