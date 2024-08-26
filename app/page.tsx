@@ -8,6 +8,7 @@ import ArticleCard, {ArticleInterface} from "@/app/components/article-card";
 import {HashLoader} from "react-spinners";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import AutoPublicationPop from "@/app/components/auto-publication-pop";
 
 export default function Home() {
 
@@ -45,9 +46,11 @@ export default function Home() {
         fetchArticles()
     }, [date, isPdf]);
 
+    const [isAutoPublicationPopOpen,setIsAutoPublicationPopOpen]=useState(false)
 
     return (
         <main className="p-10">
+            {isAutoPublicationPopOpen&&<AutoPublicationPop closeFunc={()=>{setIsAutoPublicationPopOpen(false)}}/>}
             <div className={'mt-5 flex flex-col gap-12'}>
                 <div className={'flex items-center pr-32 justify-between'}>
                     <div className={'flex items-center gap-20'}>
@@ -67,6 +70,9 @@ export default function Home() {
 
                                 </motion.div>
                             </div>
+                        </div>
+                        <div onClick={()=>{setIsAutoPublicationPopOpen(true)}} className={'bg-blue-500 font-bold rounded-xl cursor-pointer p-2 flex items-center justify-center text-white'}>
+                            Автопубликация
                         </div>
                     </div>
                     <div className={'flex flex-col w-48 justify-end'}>
