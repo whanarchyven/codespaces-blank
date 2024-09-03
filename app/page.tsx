@@ -9,6 +9,7 @@ import {HashLoader} from "react-spinners";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import AutoPublicationPop from "@/app/components/auto-publication-pop";
+import Settings from "@/app/components/settings";
 
 export default function Home() {
 
@@ -74,6 +75,7 @@ export default function Home() {
                         <div onClick={()=>{setIsAutoPublicationPopOpen(true)}} className={'bg-blue-500 font-bold rounded-xl cursor-pointer p-2 flex items-center justify-center text-white'}>
                             Автопубликация
                         </div>
+                        <Settings/>
                     </div>
                     <div className={'flex flex-col w-48 justify-end'}>
                         <DatePicker dateFormat={'dd.MM.yyyy'}
