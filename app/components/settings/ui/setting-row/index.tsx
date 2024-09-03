@@ -18,7 +18,7 @@ const SettingRow: FC<SettingRowInterface> = ({setting_name, fetchFunc, updateFun
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetchFunc().then((res) => {
+        fetchFunc().then((res:any) => {
             if(res){
                 setValue(res)
                 setLoading(false)
