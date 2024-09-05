@@ -5,6 +5,7 @@ import axios from "axios";
 import {ClipLoader} from "react-spinners";
 import clsx from "clsx";
 import TextareaAutosize from 'react-textarea-autosize';
+import Editor from '../editor';
 interface ArticlePopInterface extends ArticleInterface {
     closeFunc: () => any,
 }
@@ -51,7 +52,12 @@ const ArticlePop: FC<ArticlePopInterface> = ({
             setInputSummary(data.summary_human)
             setInputContent(data.translation_human)
             setInputTitle(data.title_translation_human)
-            setInputReferences(data.references_human.join('\n'))
+            if(data.references_human){
+                setInputReferences(data.references_human.join('\n'))
+            }
+            else{
+                setInputReferences('')
+            }
         }
         setIsFetching(false)
         console.log(data)
@@ -177,18 +183,20 @@ const ArticlePop: FC<ArticlePopInterface> = ({
                 </div>
                 {!hasPdf&&<div className={'flex flex-col gap-1'}>
                     <p className={'text-blue-500 font-medium'}>Перевод текста</p>
-                    <TextareaAutosize rows={10} value={inputContent} onChange={(event) => {
+                    {/* <TextareaAutosize rows={10} value={inputContent} onChange={(event) => {
                         setInputContent(event.target.value)
                     }}
-                              className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{inputContent}</TextareaAutosize>
+                              className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{inputContent}</TextareaAutosize> */}
+                              {!isFetching?<Editor value={inputContent} mutate={setInputContent}/>:<ClipLoader color='#3b82f6'/>}
                 </div>}
 
                 {!hasPdf&&<div className={'flex flex-col gap-1'}>
                     <p className={'text-blue-500 font-medium'}>Саммари</p>
-                    <TextareaAutosize rows={10} value={inputSummary} onChange={(event) => {
+                    {/* <TextareaAutosize rows={10} value={inputSummary} onChange={(event) => {
                         setInputSummary(event.target.value)
                     }}
-                                      className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{inputSummary}</TextareaAutosize>
+                                      className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{inputSummary}</TextareaAutosize> */}
+                                       {!isFetching?<Editor value={inputSummary} mutate={setInputSummary}/>:<ClipLoader color='#3b82f6'/>}
                 </div>}
                 <div className={'flex flex-col gap-1'}>
                     <p className={'text-blue-500 font-medium'}>Список используемых источников (каждый источник с новой
@@ -251,17 +259,19 @@ const ArticlePop: FC<ArticlePopInterface> = ({
                         </div>
                         <div className={'flex flex-col gap-1'}>
                             <p className={'text-blue-500 font-medium'}>Перевод текста PDF</p>
-                            <TextareaAutosize rows={10} value={pdfInputText} onChange={(event) => {
+                            {/* <TextareaAutosize rows={10} value={pdfInputText} onChange={(event) => {
                                 setPdfInputText(event.target.value)
                             }}
-                                      className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{pdfInputText}</TextareaAutosize>
+                                      className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{pdfInputText}</TextareaAutosize> */}
+                                      {!isPdfFetching?<Editor value={pdfInputText} mutate={setPdfInputText}/>:<ClipLoader color='#3b82f6'/>}
                         </div>
                         <div className={'flex flex-col gap-1'}>
                             <p className={'text-blue-500 font-medium'}>Саммари PDF</p>
-                            <TextareaAutosize rows={10} value={pdfInputSummary} onChange={(event) => {
+                            {/* <TextareaAutosize rows={10} value={pdfInputSummary} onChange={(event) => {
                                 setPdfInputSummary(event.target.value)
                             }}
-                                      className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{pdfInputSummary}</TextareaAutosize>
+                                      className={'text-xl font-normal w-full border-blue-500 rounded-xl border-2 p-2'}>{pdfInputSummary}</TextareaAutosize> */}
+                                      {!isPdfFetching?<Editor value={pdfInputSummary} mutate={setPdfInputSummary}/>:<ClipLoader color='#3b82f6'/>}
                         </div>
                     </div>}
                 {inputSummary?.length > 0 && inputContent?.length > 0 && inputTitle?.length > 0 ? <div onClick={() => {

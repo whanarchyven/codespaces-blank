@@ -8,6 +8,13 @@ const Page = () => {
 
     const [display,setDisplay]=useState(false)
 
+    const [content,setContent]=useState('')
+
+    useEffect(()=>{
+        console.log(content)
+    },[content])
+
+
     useEffect(() => {
         setTimeout(()=>{
             setDisplay(true)
@@ -15,7 +22,7 @@ const Page = () => {
     }, []);
     return(
         <div>
-            {display&&<Editor/>}
+            {display&&<Editor value={content} mutate={setContent}/>}
         </div>
     )
 };
